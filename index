@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Direção Criativa & E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Harmony -->
+    <!-- Application Structure Plan: A tab-based SPA structure was chosen to separate the two main offerings: 'Direção Criativa' and 'E-commerce Shopify'. This prevents overwhelming the user with a long scroll page and allows them to focus on one topic at a time. The 'Direção Criativa' section uses an interactive accordion to present detailed services cleanly. The 'E-commerce' section uses a side-by-side comparison layout, enhanced by a dynamic Chart.js chart to visually summarize the trade-offs between the two options (Template vs. Custom). This interactive, non-linear structure is more engaging and aids decision-making better than a static document. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: 'Direção Criativa' service list -> Goal: Organize/Inform -> Viz/Presentation: Interactive Accordion (HTML/Tailwind/JS) -> Interaction: Click to expand/collapse details -> Justification: Breaks down complex information into digestible chunks, improving clarity and reducing cognitive load.
+        - Report Info: E-commerce options comparison (Template vs. Custom) -> Goal: Compare/Analyze -> Viz/Presentation: Horizontal Bar Chart (Chart.js) + Side-by-Side Cards -> Interaction: Hover over chart bars for tooltips with details -> Justification: The chart provides an immediate, quantitative-feeling visual summary of qualitative differences (cost, time, exclusivity), which is highly effective for comparison. The cards provide the necessary detail to support the visual analysis.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-button.active {
+            background-color: #A58A73;
+            color: #FFFFFF;
+        }
+        .tab-button {
+            transition: all 0.3s ease-in-out;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-900">Proposta Interativa</h1>
+            <p class="text-lg md:text-xl text-stone-600 mt-2">Direção Criativa & E-commerce para Marcas de Beleza</p>
+        </header>
+
+        <nav class="flex justify-center mb-8 md:mb-12">
+            <div class="flex space-x-2 md:space-x-4 bg-stone-200 p-1.5 rounded-full">
+                <button id="tab-btn-direcao" class="tab-button active text-sm md:text-base font-semibold py-2 px-4 md:px-8 rounded-full">Direção Criativa</button>
+                <button id="tab-btn-ecommerce" class="tab-button text-sm md:text-base font-semibold py-2 px-4 md:px-8 rounded-full">E-commerce Shopify</button>
+            </div>
+        </nav>
+
+        <main>
+            <section id="content-direcao" class="content-section active">
+                 <div class="text-center max-w-3xl mx-auto mb-10">
+                    <h2 class="text-3xl font-bold mb-3 text-stone-900">Direção Criativa Holística</h2>
+                    <p class="text-stone-600">Esta seção detalha minha atuação como Diretor Criativo. O objetivo é unificar e elevar a presença da sua marca em todos os pontos de contato, combinando estratégia e execução de alto nível. Explore cada área de atuação abaixo para ver como podemos construir uma narrativa de marca coesa e impactante.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm max-w-3xl mx-auto mb-8 text-center">
+                    <h3 class="text-2xl font-bold mb-2 text-stone-900">Investimento Total em Direção Criativa</h3>
+                    <p class="text-3xl font-bold text-stone-700">R$ 15.000,00</p>
+                    <p class="text-stone-500 text-sm mt-1">(Valor mensal estimado, ajustável conforme escopo final)</p>
+                </div>
+
+                <div id="accordion-container" class="space-y-4 max-w-3xl mx-auto">
+                </div>
+            </section>
+
+            <section id="content-ecommerce" class="content-section">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <h2 class="text-3xl font-bold mb-3 text-stone-900">Soluções de E-commerce Shopify</h2>
+                     <p class="text-stone-600">Para uma marca de beleza, a experiência de compra online é crucial. Esta seção apresenta duas abordagens para a criação de um e-commerce na plataforma Shopify, projetadas para encantar e converter. Analise o gráfico comparativo e os detalhes de cada opção para escolher o caminho que melhor se alinha aos seus objetivos de negócio e orçamento.</p>
+                </div>
+
+                <div class="chart-container mb-12">
+                    <canvas id="ecommerce-comparison-chart"></canvas>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="text-2xl font-bold mb-2 text-stone-900">1. Template Padrão Otimizado</h3>
+                        <p class="text-3xl font-bold text-stone-700 mb-4">R$ 8.000,00</p>
+                        <p class="text-stone-600 mb-4">Ideal para um lançamento rápido e eficiente, personalizando um template robusto para refletir a identidade da marca.</p>
+                        
+                        <h4 class="font-semibold text-lg mb-2 text-stone-800">Vantagens:</h4>
+                        <ul id="vantagens-template" class="list-disc list-inside space-y-1 text-stone-600 mb-4"></ul>
+
+                        <h4 class="font-semibold text-lg mb-2 text-stone-800">O que será feito:</h4>
+                        <ul id="escopo-template" class="list-disc list-inside space-y-1 text-stone-600"></ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="text-2xl font-bold mb-2 text-stone-900">2. Template Criado do Zero</h3>
+                        <p class="text-3xl font-bold text-stone-700 mb-4">R$ 25.000,00</p>
+                        <p class="text-stone-600 mb-4">A solução definitiva para uma marca que busca exclusividade, flexibilidade total e uma experiência de usuário única.</p>
+                        
+                        <h4 class="font-semibold text-lg mb-2 text-stone-800">Vantagens:</h4>
+                        <ul id="vantagens-custom" class="list-disc list-inside space-y-1 text-stone-600 mb-4"></ul>
+                        
+                        <h4 class="font-semibold text-lg mb-2 text-stone-800">O que será feito:</h4>
+                        <ul id="escopo-custom" class="list-disc list-inside space-y-1 text-stone-600"></ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 pt-8 border-t border-stone-200">
+            <p class="text-stone-500">Vamos criar algo incrível juntos.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = {
+                btnDirecao: document.getElementById('tab-btn-direcao'),
+                btnEcommerce: document.getElementById('tab-btn-ecommerce'),
+            };
+
+            const contents = {
+                direcao: document.getElementById('content-direcao'),
+                ecommerce: document.getElementById('content-ecommerce'),
+            };
+
+            const accordionContainer = document.getElementById('accordion-container');
+            const ecommerceData = {
+                template: {
+                    vantagens: [
+                        "Menor custo e tempo de desenvolvimento",
+                        "Funcionalidades já testadas",
+                        "Otimização visual e de usabilidade",
+                        "Integração de APPs essenciais"
+                    ],
+                    escopo: [
+                        "Seleção do template Shopify adequado",
+                        "Personalização completa de cores e fontes",
+                        "Adaptação do layout para destacar produtos",
+                        "Configuração de páginas essenciais",
+                        "Otimização para dispositivos móveis",
+                        "Integração com pagamento e frete"
+                    ]
+                },
+                custom: {
+                    vantagens: [
+                        "Design exclusivo e diferenciado",
+                        "UX/UI personalizadas para o público-alvo",
+                        "Flexibilidade total para funcionalidades",
+                        "Otimização de performance desde o início"
+                    ],
+                    escopo: [
+                        "Pesquisa aprofundada e benchmarking",
+                        "Desenvolvimento de wireframes e protótipos",
+                        "Criação de design exclusivo para todas as páginas",
+                        "Codificação do tema Shopify do zero",
+                        "Implementação de funcionalidades personalizadas",
+                        "Testes rigorosos de usabilidade e performance",
+                        "Otimização completa para SEO",
+                        "Integração com sistemas e APPs"
+                    ]
+                }
+            };
+            
+            const accordionData = [
+                {
+                    icon: '📱',
+                    title: 'Conteúdo para Redes Sociais',
+                    items: [
+                        'Criação de posts e stories com designs atraentes e textos envolventes',
+                        'Desenvolvimento de campanhas sazonais e promocionais com linguagem visual impactante',
+                        'Sugestão e criação de conteúdo em vídeo (reels, tutoriais, unboxings)',
+                        'Criação de filtros e stickers personalizados para maior engajamento'
+                    ]
+                },
+                {
+                    icon: '📧',
+                    title: 'Materiais para E-mail Marketing (CRM)',
+                    items: [
+                        'Design e redação de e-mails promocionais para lançamentos e ofertas',
+                        'Criação de fluxos de automação (boas-vindas, carrinhos abandonados, etc.)',
+                        'Desenvolvimento de newsletters com conteúdo relevante e dicas de beleza'
+                    ]
+                },
+                {
+                    icon: '📦',
+                    title: 'Materiais Offline',
+                    items: [
+                        'Criação de materiais de ponto de venda (PDV) como displays e banners',
+                        'Desenvolvimento de embalagens de produto que transmitam exclusividade',
+                        'Criação de materiais institucionais como catálogos e brindes'
+                    ]
+                },
+                {
+                    icon: '🎨',
+                    title: 'Criação de Banners e Peças Gráficas',
+                    items: [
+                        'Desenvolvimento de banners para campanhas de mídia paga (Google/Meta Ads)',
+                        'Criação de peças gráficas para blogs, parcerias e outras necessidades da marca'
+                    ]
+                }
+            ];
+
+            function populateList(elementId, items) {
+                const ul = document.getElementById(elementId);
+                items.forEach(itemText => {
+                    const li = document.createElement('li');
+                    li.textContent = itemText;
+                    ul.appendChild(li);
+                });
+            }
+
+            function initializeAccordion() {
+                accordionData.forEach((section, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'bg-white border border-stone-200 rounded-xl shadow-sm';
+
+                    const button = document.createElement('button');
+                    button.className = 'w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none';
+                    button.innerHTML = `
+                        <span class="flex items-center">
+                            <span class="mr-4 text-2xl">${section.icon}</span>
+                            ${section.title}
+                        </span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    `;
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'accordion-content px-5 pb-5';
+                    
+                    const list = document.createElement('ul');
+                    list.className = 'list-disc list-inside space-y-2 text-stone-600';
+                    section.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        list.appendChild(li);
+                    });
+                    
+                    contentDiv.appendChild(list);
+                    itemDiv.appendChild(button);
+                    itemDiv.appendChild(contentDiv);
+                    
+                    button.addEventListener('click', () => {
+                        const allContents = accordionContainer.querySelectorAll('.accordion-content');
+                        const allArrows = accordionContainer.querySelectorAll('button span:last-child');
+
+                        allContents.forEach((el, i) => {
+                            if (el !== contentDiv) {
+                                el.style.maxHeight = null;
+                                allArrows[i].style.transform = 'rotate(0deg)';
+                            }
+                        });
+
+                        if (contentDiv.style.maxHeight) {
+                            contentDiv.style.maxHeight = null;
+                            button.querySelector('span:last-child').style.transform = 'rotate(0deg)';
+                        } else {
+                            contentDiv.style.maxHeight = contentDiv.scrollHeight + "px";
+                            button.querySelector('span:last-child').style.transform = 'rotate(180deg)';
+                        }
+                    });
+
+                    accordionContainer.appendChild(itemDiv);
+                });
+            }
+
+            function switchTab(activeTab) {
+                Object.values(tabs).forEach(btn => btn.classList.remove('active'));
+                Object.values(contents).forEach(content => content.classList.remove('active'));
+
+                if (activeTab === 'direcao') {
+                    tabs.btnDirecao.classList.add('active');
+                    contents.direcao.classList.add('active');
+                } else {
+                    tabs.btnEcommerce.classList.add('active');
+                    contents.ecommerce.classList.add('active');
+                    renderChart();
+                }
+            }
+            
+            let chartInstance = null;
+            function renderChart() {
+                if (chartInstance) {
+                    return;
+                }
+                const ctx = document.getElementById('ecommerce-comparison-chart').getContext('2d');
+                const data = {
+                    labels: ['Custo', 'Tempo de Entrega', 'Exclusividade', 'Flexibilidade'],
+                    datasets: [
+                        {
+                            label: 'Template Padrão',
+                            data: [1, 1, 2, 2],
+                            backgroundColor: 'rgba(199, 180, 162, 0.7)',
+                            borderColor: 'rgba(165, 138, 115, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Template do Zero',
+                            data: [3, 3, 3, 3],
+                            backgroundColor: 'rgba(165, 138, 115, 0.7)',
+                            borderColor: 'rgba(120, 94, 76, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                };
+
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Comparativo: Template Padrão vs. Criado do Zero',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        const value = context.raw;
+                                        let level = '';
+                                        if (value === 1) level = 'Baixo';
+                                        if (value === 2) level = 'Médio';
+                                        if (value === 3) level = 'Alto';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += level;
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false,
+                                max: 3.5
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            tabs.btnDirecao.addEventListener('click', () => switchTab('direcao'));
+            tabs.btnEcommerce.addEventListener('click', () => switchTab('ecommerce'));
+
+            populateList('vantagens-template', ecommerceData.template.vantagens);
+            populateList('escopo-template', ecommerceData.template.escopo);
+            populateList('vantagens-custom', ecommerceData.custom.vantagens);
+            populateList('escopo-custom', ecommerceData.custom.escopo);
+            
+            initializeAccordion();
+        });
+    </script>
+</body>
+</html>
